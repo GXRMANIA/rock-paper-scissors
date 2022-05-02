@@ -30,28 +30,58 @@ function playRound(computerSelection, playerSelection) {
 }
 
 function game() {
+    const playerPick = document.querySelector(".playerPick");
+    const pcPick = document.querySelector(".pcPick"); 
+    const result = document.querySelector(".result"); 
+    const score = document.querySelector(".score");
     let playerScore = 0;
     let computerScore = 0;
-    let numberOfRounds = 5;
+    let res = "";
 
-    for ( let i = 0; i<numberOfRounds; i++) {
-        let res = playRound(computerPlay(), prompt("What do u pick?"));
-        if(res.includes("win")) {
-            ++playerScore;
-        } else if(res.includes("lose")) {
-            ++computerScore;
-        }
-        console.log(res + ` Score: You: ${playerScore} : PC: ${computerScore}`)
+    const buttons = document.querySelectorAll(".btn");
+    buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            let computerPick = computerPlay();
+            res = playRound(computerPick, btn.textContent)
+            
+            playerPick.textContent = "You: " + btn.textContent;
+            pcPick.textContent = "PC: " + capitalizeString(computerPick);
+
+
+            if(res.includes("win")) {
+                result.textContent = "You won!"
+                score.textContent = `Score: You: ${++playerScore} - PC: ${computerScore}`
+            } else if(res.includes("lose")) {
+                result.textContent = "You lost!"
+                score.textContent = `Score: You: ${playerScore} - PC: ${++computerScore}`
+            } else {
+                result.textContent = "It's a tie..."
+                score.textContent = `Score: You: ${playerScore} - PC: ${computerScore}`
+                
+            }
+
+            if(playerScore == 5) {
+                score.textContent = "GAME OVER. You won!"
+                newGame();
+            } else if(computerScore == 5) {
+                score.textContent = "GAME OVER. You lost!"
+                newGame();
+            }
+
+        })
+    })
+
+    function newGame() {
+        playerScore = 0;
+        computerScore = 0;
     }
+    
+}
 
-    if(playerScore>computerScore) {
-        console.log("You won the game...")
-    } else if (playerScore<computerScore) {
-        console.log("You lost the game...")
-    } else {
-        console.log("Game is a tie...")
-    }
-
+function capitalizeString(input) {
+    let temp = input.split("");
+    temp[0] = temp[0].toUpperCase();
+    return temp.join("") 
 }
 
 
